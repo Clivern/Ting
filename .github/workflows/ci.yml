@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        go: ["1.27.1"]
+    name: Go ${{ matrix.go }} run
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup go
+        uses: actions/setup-go@v7
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Get dependencies
+        run: |
+          export PATH=${PATH}:`go env GOPATH`/bin
+          make revive
+
+      - name: Run make ci
+        run: |
+          export PATH=${PATH}:`go env GOPATH`/bin
+          make ci
+          git status
+          git diff > diff.log
+          cat diff.log
+          git clean -fd
+          git reset --hard
+          make verify

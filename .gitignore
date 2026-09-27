@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# dist dir
+dist
+
+coverage.html
+
+# Binary
+ting
+
+# Local config overrides
+config.test.yml
