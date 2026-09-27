@@ -8,6 +8,9 @@ app:
     output: ${TING_SERVER_LOG_OUTPUT:-stdout}
     format: ${TING_SERVER_LOG_FORMAT:-console}
 
-upstream:
-  url: ${TING_UPSTREAM_URL:-https://openrouter.ai}
+llm:
+  url: ${TING_LLM_URL:-https://openrouter.ai}
   api_key: ${OPENROUTER_API_KEY:-}
+
+mgmt:
+  url: ${ZIEE_MGMT_URL:-}

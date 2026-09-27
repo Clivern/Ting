@@ -32,13 +32,8 @@ Copy `config.dist.yml` if you want a local override, export the API key, and sta
 
 ```bash
 export OPENROUTER_API_KEY=sk-or-...
+export ZIEE_MGMT_URL=http://127.0.0.1:9090
 ting server -c config.dist.yml
-```
-
-The server listens on port `8080` by default. Clients call Ting the same way they would call OpenRouter:
-
-```bash
-curl http://127.0.0.1:8080/api/v1/models
 ```
 
 Print build information:

@@ -20,16 +20,20 @@ import (
 
 // RunServer starts the reverse proxy and blocks until shutdown.
 func RunServer() error {
-	target, err := url.Parse(viper.GetString("upstream.url"))
+	target, err := url.Parse(viper.GetString("llm.url"))
 	if err != nil {
 		return err
 	}
 
-	token := viper.GetString("upstream.api_key")
 	port := viper.GetInt("app.port")
+
 	srv := &http.Server{
-		Addr:              fmt.Sprintf(":%s", strconv.Itoa(port)),
-		Handler:           logRequests(newHandler(target, token)),
+		Addr: fmt.Sprintf(":%s", strconv.Itoa(port)),
+		Handler: logRequests(newHandler(
+			target,
+			viper.GetString("llm.api_key"),
+			viper.GetString("mgmt.url"),
+		)),
 		ReadHeaderTimeout: 10 * time.Second,
 		IdleTimeout:       120 * time.Second,
 	}
@@ -39,7 +43,7 @@ func RunServer() error {
 	go func() {
 		log.Info().
 			Int("port", port).
-			Str("upstream", target.String()).
+			Str("llm", target.String()).
 			Msg("Starting proxy server")
 
 		err := srv.ListenAndServe()

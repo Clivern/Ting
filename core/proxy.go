@@ -12,8 +12,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func newHandler(target *url.URL, token string) http.Handler {
-	return &httputil.ReverseProxy{
+func newHandler(target *url.URL, token, mgmtURL string) http.Handler {
+	proxy := &httputil.ReverseProxy{
 		Rewrite: func(r *httputil.ProxyRequest) {
 			r.SetURL(target)
 			r.Out.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
@@ -27,6 +27,14 @@ func newHandler(target *url.URL, token string) http.Handler {
 			http.Error(w, "bad gateway", http.StatusBadGateway)
 		},
 	}
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if (r.URL.Path != "/api/v1/chat/completions" && r.URL.Path != "/api/v1/messages") || !isAllowed(r, mgmtURL) {
+			http.Error(w, "forbidden", http.StatusForbidden)
+			return
+		}
+		proxy.ServeHTTP(w, r)
+	})
 }
 
 func logRequests(next http.Handler) http.Handler {
