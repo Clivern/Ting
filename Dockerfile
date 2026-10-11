@@ -1,4 +1,4 @@
-FROM golang:1.27.1 AS builder
+FROM golang:1.27.2 AS builder
 
 ARG TING_VERSION=0.1.0
 ARG TING_COMMIT=none
